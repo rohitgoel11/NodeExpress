@@ -1,4 +1,11 @@
 var columnDefs = [ {
+	headerName : "#",
+	width : 50,
+	checkboxSelection : true,
+	cellRenderer : function(params) {
+		return params.node.id + 1;
+	}
+}, {
 	headerName : "Id",
 	field : "_id",
 	width : 150,
@@ -13,7 +20,7 @@ var columnDefs = [ {
 	field : "guid",
 	width : 150
 }, {
-	headerName : "Aalance",
+	headerName : "Balance",
 	field : "balance",
 	width : 150
 }, {
@@ -41,8 +48,107 @@ var gridOptions = {
 	enableColResize : false,
 	paginationPageSize : 10,
 	columnDefs : columnDefs,
-	rowModelType : 'pagination'
+	rowModelType : 'pagination',
+	suppressRowClickSelection: true,
+	onRowSelected: rowSelectedFunc,
+
 };
+
+function rowSelectedFunc(event){
+	if(event.node.isSelected()){
+		
+	    $( "#DialogBox" ).dialog({
+	    	title: "Edit Information",
+	        resizable: false,
+	        height: "auto",
+	        width: 500,
+	        show: {
+	            effect: "blind",
+	            duration: 500
+	          },
+	        modal: true,
+	        closeOnEscape: false,
+	        open: function(event, ui) { $(".ui-dialog-titlebar-close").hide();},
+	        buttons: [
+	                  {
+	                    text: "Submit",
+	                    icons: {
+	                      primary: "ui-icon-heart"
+	                    },
+	                    click: function() {
+	                      event.node.setSelected()==false;
+	                      $(this).dialog('close');
+	                    }
+	                  },
+	                  {
+		                    text: "Cancel",
+		                    icons: {
+		                      primary: "ui-icon-heart"
+		                    },
+		                    click: function() {
+		                      event.node.setSelected()==false;
+		                      $(this).dialog('close');
+		                    }
+		                  }
+	                ]
+	    });
+	    
+	 		    document.getElementById('DialogBox').style.visibility = 'visible';
+	    $("#Id").val(event.node.data._id);
+	    $("#Index").val(event.node.data.index);
+	    $("#Guid").val(event.node.data.guid);
+	    $("#Balance").val(event.node.data.balance);
+	    $("#Age").val(event.node.data.age);
+	    $("#EyeColor").val(event.node.data.eyeColor);
+	    $("#Phone").val(event.node.data.phone);
+	    $("#Address").val(event.node.data.address);
+	}
+}
+
+function createNewEntry(){
+    $("#Id").val("");
+    $("#Index").val("");
+    $("#Guid").val("");
+    $("#Balance").val("");
+    $("#Age").val("");
+    $("#EyeColor").val("");
+    $("#Phone").val("");
+    $("#Address").val("");
+	 $( "#DialogBox" ).dialog({
+		 	title: "Add Entry",
+	        resizable: false,
+	        height: "auto",
+	        width: 500,
+	        show: {
+	            effect: "blind",
+	            duration: 500
+	          },
+	        modal: true,
+	        buttons: [
+	                  {
+	                    text: "Submit",
+	                    icons: {
+	                      primary: "ui-icon-heart"
+	                    },
+	                    click: function() {
+	                      $(this).dialog('close');
+	                    }
+	                  },
+	                  {
+		                    text: "Cancel",
+		                    icons: {
+		                      primary: "ui-icon-heart"
+		                    },
+		                    click: function() {
+		                      $(this).dialog('close');
+		                    }
+		                  }
+	                ]
+	    });
+	    
+	 		    document.getElementById('DialogBox').style.visibility = 'visible';
+}
+
 
 function onPageSizeChanged(newPageSize) {
 	this.gridOptions.paginationPageSize = new Number(newPageSize);
