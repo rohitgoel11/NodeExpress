@@ -203,16 +203,37 @@ function setRowData1(rowData) {
 document.addEventListener('DOMContentLoaded', function() {
 	var gridDiv = document.querySelector('#myGrid');
 	new agGrid.Grid(gridDiv, gridOptions);
-
+	var myColumnDefs = new Object();
+	var httpResponse;
+	var httpResponse1;
 	// do http request to get our sample data - not using any framework to keep the example self contained.
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.open('GET', 'http://localhost:8080/spring3/staff', true);
 	httpRequest.send();
 	httpRequest.onreadystatechange = function() {
 		if (httpRequest.readyState == 4 && httpRequest.status == 200) {
-			var httpResponse = JSON.parse(httpRequest.responseText);
-			setRowData1(httpResponse);
+			 httpResponse = JSON.parse(httpRequest.responseText);
+			 httpResponse1=httpResponse.mystaff;	
 		}
+		setTimeout(xyz,2000);
 	};
-	gridOptions.api.sizeColumnsToFit();
+	gridOptions.api.sizeColumnsToFit(); 	
 });
+
+function xyz() {
+	for ( var i=0 ; i < 1; i++) {
+		var httpRequest1 = new XMLHttpRequest();
+		httpRequest1.open('GET', 'http://localhost:8080/spring3/staff/' + httpResponse1[i].index, true);
+		httpRequest1.send();
+		httpRequest1.onreadystatechange = function() {
+			if (httpRequest1.readyState == 4 && httpRequest1.status == 200) {
+				var httpMyData = JSON.parse(httpRequest1.responseText);
+				myColumnDefs[i]=httpMyData;
+			}
+	}
+	}
+	  //your code to be executed after 1 second
+
+
+
+setRowData1(myColumnDefs); }
