@@ -7,37 +7,18 @@ var columnDefs = [ {
 	}
 }, {
 	headerName : "Id",
-	field : "_id",
+	field : "id",
 	width : 150,
 	sort : 'desc'
 }, {
 	headerName : "Index",
 	field : "index",
 	editable : true,
-	width : 150
+	width : 150,
+	sort: 'desc'
 }, {
 	headerName : "Guid",
 	field : "guid",
-	width : 150
-}, {
-	headerName : "Balance",
-	field : "balance",
-	width : 150
-}, {
-	headerName : "Age",
-	field : "age",
-	width : 150
-}, {
-	headerName : "EyeColor",
-	field : "eyeColor",
-	width : 150
-}, {
-	headerName : "Phone",
-	field : "phone",
-	width : 150
-}, {
-	headerName : "Address",
-	field : "address",
 	width : 150
 } ];
 
@@ -50,7 +31,7 @@ var gridOptions = {
 	columnDefs : columnDefs,
 	rowModelType : 'pagination',
 	suppressRowClickSelection: true,
-	onRowSelected: rowSelectedFunc,
+	onRowSelected: rowSelectedFunc
 
 };
 
@@ -198,14 +179,13 @@ function setRowData1(rowData) {
 	allOfTheData = rowData;
 	createNewDatasource();
 }
-
+var httpResponse1;
 // setup the grid after the page has finished loading
 document.addEventListener('DOMContentLoaded', function() {
 	var gridDiv = document.querySelector('#myGrid');
 	new agGrid.Grid(gridDiv, gridOptions);
-	var myColumnDefs = new Object();
 	var httpResponse;
-	var httpResponse1;
+	
 	// do http request to get our sample data - not using any framework to keep the example self contained.
 	var httpRequest = new XMLHttpRequest();
 	httpRequest.open('GET', 'http://localhost:8080/spring3/staff', true);
@@ -214,26 +194,43 @@ document.addEventListener('DOMContentLoaded', function() {
 		if (httpRequest.readyState == 4 && httpRequest.status == 200) {
 			 httpResponse = JSON.parse(httpRequest.responseText);
 			 httpResponse1=httpResponse.mystaff;	
-		}
-		setTimeout(xyz,2000);
+			 xyz(httpResponse1);
+		}		
+	
 	};
+	
 	gridOptions.api.sizeColumnsToFit(); 	
 });
 
-function xyz() {
-	for ( var i=0 ; i < 1; i++) {
-		var httpRequest1 = new XMLHttpRequest();
-		httpRequest1.open('GET', 'http://localhost:8080/spring3/staff/' + httpResponse1[i].index, true);
-		httpRequest1.send();
-		httpRequest1.onreadystatechange = function() {
-			if (httpRequest1.readyState == 4 && httpRequest1.status == 200) {
-				var httpMyData = JSON.parse(httpRequest1.responseText);
-				myColumnDefs[i]=httpMyData;
-			}
-	}
-	}
-	  //your code to be executed after 1 second
+function xyz(httpResponse1) {
+	var myColumnDefs=[];
+	 var deferreds = GetSomeDeferredStuff();
+	 
+	 $.when.apply($, deferreds).done(function() {
+			$.each(arguments, function( index, value ) {
+				myColumnDefs[index]=value[0];  
+			});
+			setRowData1(myColumnDefs);
+			});
+	 
+	 
+}
 
+function GetSomeDeferredStuff() {
+    var deferreds = [];
 
+    var i = 1;
+    for (i = 1; i <= 5000; i++) {
+        var count = i;
 
-setRowData1(myColumnDefs); }
+        deferreds.push(
+        		$.ajax( {
+        			   url: 'http://localhost:8080/spring3/staff/' + i,
+        			   data: {
+        			      format: 'json'
+        			   },
+        			   type: 'GET'}));
+    }
+    return deferreds;
+}
+
