@@ -27,9 +27,9 @@ var gridOptions = {
 	enableFilter : true,
 	rowSelection : 'multiple',
 	enableColResize : false,
-	paginationPageSize : 10,
+	//paginationPageSize : 10,
 	columnDefs : columnDefs,
-	rowModelType : 'pagination',
+	//rowModelType : 'pagination',
 	suppressRowClickSelection: true,
 	onRowSelected: rowSelectedFunc
 
@@ -131,14 +131,14 @@ function createNewEntry(){
 }
 
 
-function onPageSizeChanged(newPageSize) {
+/*function onPageSizeChanged(newPageSize) {
 	this.gridOptions.paginationPageSize = new Number(newPageSize);
 	createNewDatasource();
-}
+}*/
 
 var allOfTheData;
 
-function createNewDatasource() {
+/*function createNewDatasource() {
 	if (!allOfTheData) {
 		// in case user selected 'onPageSizeChanged()' before the json was loaded
 		return;
@@ -173,11 +173,12 @@ function createNewDatasource() {
 	};
 	dataSource.rowCount = allOfTheData.length;
 	gridOptions.api.setDatasource(dataSource);
-}
+}*/
 
 function setRowData1(rowData) {
 	allOfTheData = rowData;
-	createNewDatasource();
+	gridOptions.api.setRowData(rowData);
+	//createNewDatasource();
 }
 var httpResponse1;
 // setup the grid after the page has finished loading
@@ -234,3 +235,38 @@ function GetSomeDeferredStuff() {
     return deferreds;
 }
 
+
+
+
+
+
+
+/*const async = require('async');
+const request = require('request');
+
+function httpGet(url, callback) {
+	 console.log("1");
+  const options = {
+		  
+    url :  url,
+    json : true
+  };
+	 console.log("2");
+  request(options,
+    function(err, res, body) {
+		 console.log("3");
+      callback(err, body);
+    }
+  );
+}
+
+const urls= [];
+for(i=0;i<5000;i++){
+	urls.push("http://localhost:8080/spring3/staff/" + i);
+}
+async.map(urls, httpGet, function (err, res){
+	 console.log("4");
+  if (err) return console.log(err);
+  console.log("5");
+  console.log(res);
+});*/
